@@ -1,5 +1,5 @@
-import { Component } from "react";
-import toast from "react-hot-toast";
+import React, { Component } from "react";
+// import toast from "react-hot-toast";
 import s from "./SearchBar.module.css";
 
 class SearchBar extends Component {
@@ -8,7 +8,7 @@ class SearchBar extends Component {
   };
 
   handleChange = (event) => {
-    this.setState({ inputValue: event.target.value.toLowerCase() });
+    this.setState({ inputValue: event.target.value });
   };
 
   handleSubmit = (event) => {

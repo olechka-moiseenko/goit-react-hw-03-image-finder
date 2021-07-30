@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Container from "./components/Container/Container.jsx";
 import SearchBar from "./components/SearchBar/SearchBar.jsx";
-// import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
+import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
 import Modal from "./components/Modal/Modal.jsx";
 import Button from "./components/Button/Button.jsx";
 import api from "./services/gallery-api";
@@ -88,7 +88,7 @@ export default class App extends Component {
       <Container>
         <SearchBar onSubmit={this.searchbarInputValueHandler} />
         <Toaster />
-        {/* <ImageGallery images={images} onSelect={this.handleSelectedImage} /> */}
+        <ImageGallery images={images} onSelect={this.handleSelectedImage} />
         {status === Status.RESOLVED && (
           <Button type="button" onClick={this.handleLoadMoreBtnClick}>
             Load more
