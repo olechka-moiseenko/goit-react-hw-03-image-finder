@@ -7,110 +7,114 @@ import Button from "./components/Button/Button.jsx";
 import api from "./services/gallery-api";
 import s from "./App.module.css";
 import Loader from "react-loader-spinner";
-import toast, { Toaster } from "react-hot-toast";
+// import toast, { Toaster } from "react-hot-toast";
 
-const Status = {
-  IDLE: "idle",
-  PENDING: "pending",
-  RESOLVED: "resolved",
-  REJECTED: "regected",
-};
-
-export default class App extends Component {
+class App extends Component {
   state = {
-    imageName: null,
-    images: [],
-    page: 1,
-    selectedImage: null,
-    status: Status.IDLE,
+    imgGallery: [],
+    imgName: "",
+    pageNum: 1,
+    selectedObg: null,
+    status: "idle",
     error: null,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { status, imageName, images, page } = this.state;
-    if (status === Status.RESOLVED && images.length === 0) {
-      toast.error(`Oops, we did not find such picture as ${imageName}`);
-      this.setState({ status: Status.IDLE });
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.imgGallery.length === 0 &&
+      this.state.status === "resolved"
+    ) {
+      alert(`Sorry, we did not find such pictures ${this.state.imgName}`);
+
+      this.setState({
+        status: "idle",
+      });
     }
 
-    if (status === Status.PENDING) {
-      api
-        .fetchImages(imageName, page)
-        .then((newImages) =>
-          this.setState((prevState) => ({
-            images: [...prevState.images, ...newImages],
-            status: Status.RESOLVED,
-          }))
-        )
-        .catch((error) => this.setState({ error, status: Status.REJECTED }));
+    if (this.state.status === "pending") {
+      try {
+        await api(this.state.imgName, this.state.pageNum).then(
+          (NewImgGallery) =>
+            this.setState((prevState) => ({
+              imgGallery: [...prevState.imgGallery, ...NewImgGallery],
+              status: "resolved",
+            }))
+        );
+      } catch {
+        alert(`Pixabay is dead`);
+        this.setState({ error: "error", status: "rejected" });
+      }
     }
 
     window.scrollTo({
       top: document.documentElement.scrollHeight,
-      behavior: "smoth",
+      behavior: "smooth",
     });
   }
 
-  searchbarInputValueHandler = (value) => {
-    if (value.trim() !== "") {
+  searchBarInputValueHandler = (InputValue) => {
+    if (InputValue.trim() !== "") {
       this.setState({
-        imageName: value,
-        status: Status.PENDING,
+        imgName: InputValue,
+        status: "pending",
       });
     }
 
-    if (this.state.imageName !== value) {
+    if (this.state.imgName !== InputValue) {
       this.setState({
-        images: [],
-        page: 1,
+        imgGallery: [],
+        pageNum: 1,
       });
     }
   };
 
-  handleLoadMoreBtnClick = () => {
+  loadMoreBtnHandler = () => {
     this.setState((prevState) => ({
-      page: prevState.page + 1,
-      status: Status.PENDING,
+      pageNum: (prevState.pageNum += 1),
+      status: "pending",
     }));
   };
 
-  handleSelectedImage = (data) => {
-    this.setState({ selectedImage: data });
+  handleSelectObg = (obg) => {
+    this.setState({
+      selectedObg: obg,
+      showLoader: true,
+    });
   };
 
-  closeModal = () => {
-    this.setState({ selectedImage: null });
+  toggleMdl = (evt) => {
+    this.setState(({ selectedObg }) => ({
+      selectedObg: null,
+    }));
   };
 
   render() {
-    const { status, images, selectedImage } = this.state;
     return (
       <Container>
-        <SearchBar onSubmit={this.searchbarInputValueHandler} />
-        <Toaster />
-        <ImageGallery images={images} onSelect={this.handleSelectedImage} />
-        {status === Status.RESOLVED && (
-          <Button type="button" onClick={this.handleLoadMoreBtnClick}>
-            Load more
-          </Button>
+        <SearchBar onSubmit={this.searchBarInputValueHandler} />
+        <ImageGallery
+          imgArr={this.state.imgGallery}
+          onSelect={this.handleSelectObg}
+        ></ImageGallery>
+        {this.state.status === "resolved" && (
+          <Button onLoadMore={this.loadMoreBtnHandler} />
         )}
-        {selectedImage && (
-          <Modal
-            src={selectedImage.largeImageURL}
-            alt={selectedImage.tags}
-            onClose={this.closeModal}
-            state={this.state.status}
-          />
-        )}
-        {this.state.status === Status.PENDING && (
-          <div className={s.loader}>
-            <Loader
-              type="Circles"
-              color="#00BFFF"
-              height={300}
-              width={300}
-              timeout={5000}
+
+        {this.state.selectedObg && (
+          <Modal onClose={this.toggleMdl}>
+            <img
+              src={this.state.selectedObg.largeImageURL}
+              alt={this.state.selectedObg.largeImageURL}
             />
+            <button type="button" onClick={this.toggleMdl}>
+              Close
+            </button>
+          </Modal>
+        )}
+
+        {this.state.status === "pending" && (
+          <div className={s.loader}>
+            <Loader type="Puff" color="#00BFFF" height={200} width={200} />
             <p className={s.p}>Loading...</p>
           </div>
         )}
@@ -118,3 +122,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default App;
