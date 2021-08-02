@@ -105,9 +105,9 @@ class App extends Component {
               src={this.state.selectedObg.largeImageURL}
               alt={this.state.selectedObg.largeImageURL}
             />
-            <button type="button" onClick={this.toggleMdl}>
+            {/* <button type="button" onClick={this.toggleMdl}>
               Close
-            </button>
+            </button> */}
           </Modal>
         )}
 
