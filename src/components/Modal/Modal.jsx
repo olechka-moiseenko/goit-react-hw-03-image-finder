@@ -1,16 +1,10 @@
 import React, { Component } from "react";
 import { createPortal } from "react-dom";
 import s from "./Modal.module.css";
-import PropTypes from "prop-types";
 
 const modalRoot = document.getElementById("modal-root");
 
 class Modal extends Component {
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    src: PropTypes.string.isRequired,
-  };
-
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyEsc);
   }
@@ -19,7 +13,7 @@ class Modal extends Component {
     window.removeEventListener("keydown", this.handleKeyEsc);
   }
 
-  handleKeyDown = (evt) => {
+  handleKeyEsc = (evt) => {
     if (evt.code === "Escape") {
       this.props.onClose();
     }
@@ -29,10 +23,6 @@ class Modal extends Component {
     if (evt.currentTarget === evt.target) {
       this.props.onClose();
     }
-  };
-
-  closeModal = () => {
-    this.props.onClose();
   };
 
   render() {

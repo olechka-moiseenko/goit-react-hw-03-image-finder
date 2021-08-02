@@ -4,10 +4,9 @@ import SearchBar from "./components/SearchBar/SearchBar.jsx";
 import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
 import Modal from "./components/Modal/Modal.jsx";
 import Button from "./components/Button/Button.jsx";
-import api from "./services/gallery-api";
+import { fetchImages } from "./services/gallery-api";
 import s from "./App.module.css";
 import Loader from "react-loader-spinner";
-// import toast, { Toaster } from "react-hot-toast";
 
 class App extends Component {
   state = {
@@ -33,7 +32,7 @@ class App extends Component {
 
     if (this.state.status === "pending") {
       try {
-        await api(this.state.imgName, this.state.pageNum).then(
+        await fetchImages(this.state.imgName, this.state.pageNum).then(
           (NewImgGallery) =>
             this.setState((prevState) => ({
               imgGallery: [...prevState.imgGallery, ...NewImgGallery],

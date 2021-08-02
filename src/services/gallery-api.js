@@ -8,8 +8,4 @@ export const fetchImages = async (imgName, pageNum) => {
   return response.data.hits;
 };
 
-const api = {
-  fetchImages,
-};
-
-export default api;
+export default fetchImages;

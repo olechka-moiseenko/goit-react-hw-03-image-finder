@@ -5,7 +5,7 @@ import s from "./ImageGalleryItem.module.css";
 const ImageGalleryItem = ({ imgItem, onSelect }) => {
   return (
     <li
-      className={s.imageGalleryItem}
+      className={s.ImageGalleryItem}
       key={imgItem.id}
       onClick={() => onSelect(imgItem)}
     >
